@@ -17,6 +17,7 @@ import {
   Droplets,
   Server,
 } from 'lucide-react';
+import type { SimulationParams } from '@/types';
 import { getSceneTemplates, estimateMaxTemperature } from '@/lib/simulation';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -25,7 +26,7 @@ gsap.registerPlugin(ScrollTrigger);
 // 3D Hero Scene Components
 // ============================================================
 
-function ChipWireframe({ mousePos }: { mousePos: React.MutableRefObject<{ x: number; y: number }> }) {
+function ChipWireframe({ mousePos: _mousePos }: { mousePos: React.MutableRefObject<{ x: number; y: number }> }) {
   const meshRef = useRef<THREE.Group>(null);
   const finsRef = useRef<THREE.Group>(null);
 
@@ -165,8 +166,8 @@ function ParticleCloud({ mousePos }: { mousePos: React.MutableRefObject<{ x: num
   return (
     <points ref={pointsRef}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
-        <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
         size={0.08}
@@ -183,7 +184,7 @@ function ParticleCloud({ mousePos }: { mousePos: React.MutableRefObject<{ x: num
 
 function HeroScene() {
   const mousePos = useRef({ x: 0, y: 0 });
-  const { viewport } = useThree();
+  useThree(); // initializes context
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
@@ -324,7 +325,7 @@ function TempPreview({ templateIndex }: { templateIndex: number }) {
     const data = imageData.data;
 
     const templates = getSceneTemplates();
-    const tmax = estimateMaxTemperature(templates[templateIndex].defaultParams);
+    const tmax = estimateMaxTemperature(templates[templateIndex].defaultParams as SimulationParams);
     const tmin = 25;
 
     for (let y = 0; y < h; y++) {
