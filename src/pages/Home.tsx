@@ -17,6 +17,7 @@ import {
   Droplets,
   Server,
 } from 'lucide-react';
+import type { SimulationParams } from '@/types';
 import { getSceneTemplates, estimateMaxTemperature } from '@/lib/simulation';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -324,7 +325,7 @@ function TempPreview({ templateIndex }: { templateIndex: number }) {
     const data = imageData.data;
 
     const templates = getSceneTemplates();
-    const tmax = estimateMaxTemperature(templates[templateIndex].defaultParams as import('@/types').SimulationParams);
+    const tmax = estimateMaxTemperature(templates[templateIndex].defaultParams as SimulationParams);
     const tmin = 25;
 
     for (let y = 0; y < h; y++) {
